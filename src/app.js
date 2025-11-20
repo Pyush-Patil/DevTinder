@@ -2,6 +2,12 @@ const express=require("express");
 
 const app=express();
 
+app.use("/",(req,res)=>{
+    res.send(console.log("namaste Piyush")
+    )
+});
+
+
 app.use("/test",(req,res)=>{
     res.send("Namaste from test");
 })  // Request Handlers
