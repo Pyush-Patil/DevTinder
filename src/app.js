@@ -6,6 +6,8 @@ const app=express();
 //     res.send("Namaste Piyush")
 // });
 
+
+
 //This will one match to the GET APi call for /user
 app.get("/user/:UserID/:NAme/:Password",(req,res)=>{
     console.log(req.params);
@@ -40,3 +42,4 @@ app.listen(7777,()=>{
 // + this plus indicates
 
 ///.*fly$/ this is regex which means your route mus end with fly 
+///user/:UserID/:NAme/:Password these are params which are provided into the url and this is how to retrieve it also called as dynamic routes
