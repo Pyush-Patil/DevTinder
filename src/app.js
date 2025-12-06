@@ -2,44 +2,27 @@ const express=require("express");
 
 const app=express();
 
-// app.use("/",(req,res)=>{
-//     res.send("Namaste Piyush")
-// });
-
-
-
-//This will one match to the GET APi call for /user
-app.get("/user/:UserID/:NAme/:Password",(req,res)=>{
-    console.log(req.params);
-
-    res.send([
-    {
-    Firstname:"Piyush",
-    lastname:"Patil",
-    Age:21,
-    },
-    {
-    Firstname:"John ",
-    lastname:"Doe",
-    Age:34
-    }
-])
+app.use("/user",[
+  (req,res,next)=>{
+  console.log("Handling Route User");
+  next(); //This will take you to the 2nd request handler 
+  // res.send("Response") // This will execute after the 2nd req handler func 
+  // The Error Comes because youre trying to send the response again after a successfull response alr sent over there 
+},
+ (req,res,next)=>{
+  console.log("Handling Route User 2");
+  next();
+  // res.send("2nd response");
+},
+(req,res,next)=>{
+  console.log("Handling Route User 3");
+  next();
+   res.send("3rd response");
 }
-) // Request Handlers
-
-app.post("/user",(req,res)=>{
-
-})
+]
+)
+//app.use("/route",[[rh1,rh2],rh3,rh4]) valid syntax
 
 app.listen(7777,()=>{
-    console.log("Server is Successfully running on Port 7777");   
-    
-});
-
-// if you write a*b this means you can write anything between a and b into your url and still i will run 
-//eg localhost:7777/aPIyUSHb
-
-// + this plus indicates
-
-///.*fly$/ this is regex which means your route mus end with fly 
-///user/:UserID/:NAme/:Password these are params which are provided into the url and this is how to retrieve it also called as dynamic routes
+   console.log("Successfully Running on Port 7777");
+})
