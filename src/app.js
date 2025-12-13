@@ -1,29 +1,34 @@
 
 const express=require("express");
 
+const connectDB=require("./config/database")
+
 const app=express();
 
-app.use("/getuserdata",(req,res)=>{
-  // try{
-    //logic to call db and get the user data 
-  throw new Error("Random error") // This code contains some error and  will throw along with some random code that will expose some of your data  
-  res.send("user data sent");
-  // }
-  // catch(err)
-  // {
-  //   res.status(501).send("Some Error occured Contact support team")
-  // }
-})
+const User=require("./model/user");
 
-// A way handle the error gracefully
-app.use("/",(err,req,res,next)=>{
-  if(err)
-  {
-  res.status(500).send("Something went wrong")
+app.use(express.json()); // express js middleware to get api data into json form
+
+app.post("/signup", async (req,res)=>{
+  
+     
+// creating a new user instance of the User Model    
+    const user=new User(req.body);
+    
+  try{
+    await user.save();
+    res.send("User Added Successfully");
+  }
+  catch(err){
+   res.status(400).send("Error Saving the User"+err.message)
   }
 })
 
-
-app.listen(7777,()=>{
-   console.log("Successfully Running on Port 7777");
+connectDB().then(()=>{
+    console.log("Database Connection Established");
+    app.listen(7777,()=>{
+   console.log("Successfully Running on Port 7777"); // Listening on the Server only when the database is connceted successfully
+})
+}).catch(()=>{
+console.error("Database Connection Failed");
 })
