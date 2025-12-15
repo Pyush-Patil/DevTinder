@@ -1,4 +1,4 @@
-app.get("/user/:UserID/:NAme/:Password",(req,res)=>{
+
 //     console.log(req.params);
 
 //     res.send([
