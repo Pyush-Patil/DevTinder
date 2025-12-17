@@ -7,9 +7,10 @@ const userschema= new mongoose.Schema({
         minlength:3,
         maxlength:50,
     },
-    Lastname:{
+    lastname:{
         type:String,
-        required:true
+        required:true,
+        lowercase:true
     },
     emailId:{
       type:String,

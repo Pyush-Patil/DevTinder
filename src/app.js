@@ -1,31 +1,60 @@
-
 const express=require("express");
-
 const connectDB=require("./config/database")
-
 const app=express();
-
 const User=require("./model/user");
-
+const {validatingSignupdata}=require("./utils/validations")
+const bcrypt=require("bcrypt")
 app.use(express.json()); // express js middleware to get api data into json form
 
 // POST /signup => This api will register the User into the Database
-app.post("/signup", async (req,res)=>{      
-// creating a new user instance of the User Model    
-    const ALLOWED_SIGNUP=["firstname","Lastname","emailId","password"];
+app.post("/signup", async (req,res)=>{ 
+  console.log(req.body);
+      
   try{
-    const isallowed=Object.keys(req.body).every(k=>ALLOWED_SIGNUP.includes(k));
-    if(!isallowed)
-    {
-      throw new Error("cannot add extra details")
-    }
-     const user=new User(req.body);
+    // validation of Signup data
+    validatingSignupdata(req);
+   const {firstname,lastname,emailId,password}=req.body;
+   //encrypt passwords
+     const passwordhash=await bcrypt.hash(password,10);
+   // creating a new instance of User Model
+     const user=new User({
+       firstname,
+       lastname,
+       emailId,
+       password:passwordhash
+     });
     await user.save();
     res.send("User Added Successfully");
   }
   catch(err){
-   res.status(400).send("Error Saving the User"+err.message)
+   res.status(400).send("Error Saving the User : "+err.message)
   }
+})
+
+app.post("/login",async(req,res)=>{
+    try{
+      const {emailId,password}=req.body;
+
+      const user =await User.findOne({emailId:emailId});
+
+      if(!user)
+      {
+        throw new Error("Email not found ");
+      }
+      const isvalidpassword=await bcrypt.compare(password,user.password);
+      if(isvalidpassword)
+      {
+        res.send("Login Successfull");
+      }
+      else
+      {
+        throw new Error("Invalid Password");
+      }
+
+    }catch(err)
+    {
+       res.status(400).send("Error Logging in : " + err.message);
+    }
 })
 
 // // GET-/user =>this api will give the specific user from the database
