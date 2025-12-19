@@ -4,8 +4,12 @@ const app=express();
 const User=require("./model/user");
 const {validatingSignupdata}=require("./utils/validations")
 const bcrypt=require("bcrypt")
+const cookieparser=require("cookie-parser")
+const jwt=require("jsonwebtoken");
+const {UserAuth}=require("./middlewares/auth")
 app.use(express.json()); // express js middleware to get api data into json form
 
+app.use(cookieparser());//Middleware to parse the cookie
 // POST /signup => This api will register the User into the Database
 app.post("/signup", async (req,res)=>{ 
   console.log(req.body);
@@ -44,6 +48,10 @@ app.post("/login",async(req,res)=>{
       const isvalidpassword=await bcrypt.compare(password,user.password);
       if(isvalidpassword)
       {
+         // Creating a jwt token
+        const token=await jwt.sign({_id:user._id},"DEV@TINDER$2503",{expiresIn:"1d"})
+         // sending the cookies
+         res.cookie("token",token);
         res.send("Login Successfull");
       }
       else
@@ -73,6 +81,26 @@ catch(err)
 {
   res.status(400).send("Something went wrong ");
 }
+})
+
+// Get /Profile APi
+app.get("/profile",UserAuth,async(req,res)=>{
+  try{
+    const user=req.user;
+   res.send(user)
+  }
+  catch(err)
+  {
+       res.status(400).send("Error : "+ err.message)
+  }
+
+
+})
+
+app.post("/sendConnectionrequest",UserAuth,async(req,res)=>{
+   //Logic to send connection
+  const user=req.user;
+   res.send(user.firstname + "sent the connection request");
 })
 
 // GET-/feed =>this api will give all the users from the database 

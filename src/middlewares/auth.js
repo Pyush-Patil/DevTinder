@@ -1,34 +1,28 @@
-const adminauth=(req,res,next)=>{
+const jwt=require("jsonwebtoken");
+const User=require("../model/user")
+const UserAuth= async (req,res,next)=>{
   //Writing Logic to Authenticate user
-  console.log("Admin is Getting Authorized!");
-  const token="xyz";
-  const isAdminauthorized=token==="xyz";
-  if(!isAdminauthorized)
+  try{
+  const {token}=req.cookies
+  if(!token)
   {
-    res.status(401).send("Unauthorized User");
+    throw new Error("Token not found!!!!!!!!!!!")
   }
-  else
+  const decodedobj=await jwt.verify(token,"DEV@TINDER$2503");
+  const {_id}=decodedobj;
+   const user=await User.findById(_id);
+   if(!user)
+   {
+    throw new Error("User Not found")
+   }
+   req.user=user;
+   next();
+  }
+  catch(err)
   {
-    next();
+     res.status(400).send("ERROR : " + err.message)
   }
 }
 
-const UserAuth=(req,res,next)=>{
-  //Writing Logic to Authenticate user
-  console.log("User is Getting Authorized!");
-  const token="xyz";
-  const isuserauthorized=token==="xyz";
-  if(!isuserauthorized)
-  {
-    res.status(401).send("Unauthorized User");
-  }
-  else
-  {
-    next();
-  }
-}
 
-module.exports={
-    adminauth,
-    UserAuth
-}
+module.exports={UserAuth}
