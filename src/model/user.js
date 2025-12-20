@@ -1,5 +1,7 @@
 const mongoose=require("mongoose");
 const validator=require("validator");
+const jwt=require("jsonwebtoken");
+const bcrypt=require("bcrypt")
 const userschema= new mongoose.Schema({
     firstname:{
         type:String,
@@ -69,5 +71,19 @@ const userschema= new mongoose.Schema({
     }
 },{timestamps:true})
 
+userschema.methods.getJWT=async function ()
+{
+      const user=this;
+     const token= await jwt.sign({_id:user._id},"DEV@TINDER$2503",{expiresIn:"1d"});
+
+      return token;
+}
+
+userschema.methods.validatepassword=async function (Inputpasswordbyuser) {
+     const user=this;
+     const passwordhash=user.password; //actual password present in database  
+     const isvalidpassword=await bcrypt.compare(Inputpasswordbyuser,passwordhash)
+     return isvalidpassword;
+}
 // This User Model is like a Class and will contain instances of multiple users  
 module.exports=mongoose.model("User",userschema);

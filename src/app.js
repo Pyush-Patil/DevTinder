@@ -45,12 +45,10 @@ app.post("/login",async(req,res)=>{
       {
         throw new Error("Email not found ");
       }
-      const isvalidpassword=await bcrypt.compare(password,user.password);
+      const isvalidpassword=user.validatepassword(password);
       if(isvalidpassword)
       {
-         // Creating a jwt token
-        const token=await jwt.sign({_id:user._id},"DEV@TINDER$2503",{expiresIn:"1d"})
-         // sending the cookies
+        const token=await user.getJWT();
          res.cookie("token",token);
         res.send("Login Successfull");
       }
@@ -66,7 +64,7 @@ app.post("/login",async(req,res)=>{
 })
 
 // // GET-/user =>this api will give the specific user from the database
-app.get("/user",async (req,res)=>{
+app.get("/user",async (req,res)=>{ 
   
   const useremail=req.body.emailId
 try{
