@@ -2,6 +2,7 @@ const mongoose=require("mongoose");
 const validator=require("validator");
 const jwt=require("jsonwebtoken");
 const bcrypt=require("bcrypt")
+
 const userschema= new mongoose.Schema({
     firstname:{
         type:String,
