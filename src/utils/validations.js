@@ -18,4 +18,16 @@ const validatingSignupdata=(req)=>{
     }
 }
 
-module.exports={validatingSignupdata};
+const validateEditPofiledata=(req)=>{
+    const Allowedfeilds=["Age","Gender","About","photourl","skills"];
+
+    const isEditprofileallowed=Object.keys(req.body).every((feilds)=>Allowedfeilds.includes(feilds));
+
+    return isEditprofileallowed;
+}
+
+const validatenewpassword=(newpassword)=>{
+    const ispasswordstrong=validator.isStrongPassword(newpassword);
+    return ispasswordstrong;
+}
+module.exports={validatingSignupdata,validateEditPofiledata,validatenewpassword};
