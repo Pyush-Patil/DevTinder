@@ -1,23 +1,9 @@
 const express=require("express");
 const profileRouter=express.Router();
-const {UserAuth}=require("../src/middlewares/auth")
-const {validateEditPofiledata,validatenewpassword}=require("../src/utils/validations")
+const {UserAuth}=require("../middlewares/auth")
+const {validateEditPofiledata,validatenewpassword}=require("../utils/validations")
 const bcrypt=require("bcrypt");
-const User=require("../src/model/user")
-
-
-profileRouter.get("/profile",UserAuth,async(req,res)=>{
-  try{
-    const user=req.user;
-   res.send(user)
-  }
-  catch(err)
-  {
-       res.status(400).send("Error : "+ err.message)
-  }
-
-
-})
+const User=require("../model/user")
 
 profileRouter.get("/profile/view",UserAuth,(req,res)=>{
        try

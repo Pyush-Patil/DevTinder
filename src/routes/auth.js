@@ -1,8 +1,8 @@
 const express=require("express")
 const authRouter=express.Router();
-const {validatingSignupdata}=require("../src/utils/validations")
+const {validatingSignupdata}=require("../utils/validations")
 const bcrypt=require("bcrypt")
-const User=require("../src/model/user");
+const User=require("../model/user");
 
 authRouter.post("/signup", async (req,res)=>{ 
   console.log(req.body);

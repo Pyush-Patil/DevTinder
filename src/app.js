@@ -6,13 +6,15 @@ const cookieparser=require("cookie-parser")
 app.use(express.json());
 app.use(cookieparser());
 
-const authRouter=require("../routes/auth");
-const profileRouter=require("../routes/profile");
-const requestRouter=require("../routes/requests");
+const authRouter=require("./routes/auth");
+const profileRouter=require("./routes/profile");
+const requestRouter=require("./routes/requests");
+const UserRouter=require("./routes/user")
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
+app.use("/",UserRouter)
 
 connectDB().then(()=>{
     console.log("Database Connection Established");
@@ -20,5 +22,6 @@ connectDB().then(()=>{
    console.log("Successfully Running on Port 7777"); // Listening on the Server only when the database is connceted successfully
 })
 }).catch(()=>{
-console.error("Database Connection Failed");
+}).catch((err)=>{
+console.error("Database Connection Failed:", err && err.message ? err.message : err);
 })
